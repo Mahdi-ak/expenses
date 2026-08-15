@@ -3,15 +3,12 @@ package main
 import (
 	"expenses/internal/database"
 	"expenses/internal/expense"
+	"expenses/internal/router"
 	"log"
 	"net/http"
-
-	"github.com/go-chi/chi/v5"
 )
 
 func main() {
-
-	// ctx := context.Background()
 
 	db, err := database.New("exenses.db")
 
@@ -25,33 +22,12 @@ func main() {
 
 	handler := expense.NewHandler(service)
 
-	router := chi.NewRouter()
-
-	router.Post(
-		"/expenses",
-		handler.Create,
-	)
-
-	router.Get(
-		"/expenses",
-		handler.GetAll,
-	)
-
-	router.Get(
-		"/expenses/{id}",
-		handler.GetByID,
-	)
-
-	router.Delete(
-		"/expenses/{id}",
-		handler.Delete,
-	)
-
+	r := router.New(handler)
 	log.Println("server running :8080")
 
 	err = http.ListenAndServe(
 		":8080",
-		router,
+		r.Setup(),
 	)
 
 	if err != nil {
