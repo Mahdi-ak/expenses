@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/shopspring/decimal"
 )
 
 type Handler struct {
@@ -20,9 +21,9 @@ func NewHandler(service *Service) *Handler {
 }
 
 type CreateExpenseRequest struct {
-	Amount      float64 `json:"amount"`
-	Category    string  `json:"category"`
-	Description string  `json:"description"`
+	Amount      string `json:"amount"`
+	Category    string `json:"category"`
+	Description string `json:"description"`
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
@@ -35,9 +36,13 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid request", http.StatusBadRequest)
 		return
 	}
+	amount, err := decimal.NewFromString(req.Amount)
+	if err != nil {
+		return
+	}
 
 	expense := Expense{
-		Amount:      req.Amount,
+		Amount:      amount,
 		Category:    req.Category,
 		Description: req.Description,
 	}
