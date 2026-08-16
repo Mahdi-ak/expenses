@@ -84,6 +84,15 @@ func (h *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
 		filter.Date = &t
 	}
 
+	amount := r.URL.Query().Get("amount")
+	if amount != "" {
+		r, err := decimal.NewFromString(amount)
+		if err != nil {
+			http.Error(w, "invalid amount", http.StatusBadRequest)
+		}
+		filter.Amaount = &r
+	}
+
 	expenses, err := h.service.GetAll(r.Context(), filter)
 
 	if err != nil {

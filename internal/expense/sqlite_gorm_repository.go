@@ -81,6 +81,10 @@ func (r *SQLiteRepository) GetAll(ctx context.Context, filter Filter) ([]Expense
 		query = query.Where("created_at >= ? AND created_at < ?", start, end)
 	}
 
+	if filter.Amaount != nil {
+		query = r.db.Where("amount = ?", *filter.Amaount)
+	}
+
 	result := query.Find(&expenses)
 
 	if result.Error != nil {

@@ -6,7 +6,7 @@ require gorm.io/gorm v1.31.2
 
 require github.com/go-chi/chi/v5 v5.3.1
 
-require github.com/shopspring/decimal v1.4.0 // indirect
+require github.com/shopspring/decimal v1.4.0
 
 require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
