@@ -1,4 +1,4 @@
-package router
+package bootstrap
 
 import (
 	"expenses/handler"
@@ -10,7 +10,7 @@ type Router struct {
 	handler *handler.Handler
 }
 
-func New(handler *handler.Handler) *Router {
+func NewRouter(handler *handler.Handler) *Router {
 	return &Router{
 		handler: handler,
 	}

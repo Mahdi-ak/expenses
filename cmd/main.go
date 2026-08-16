@@ -1,17 +1,16 @@
 package main
 
 import (
+	"expenses/bootstrap"
 	"expenses/handler"
-	"expenses/internal/database"
 	"expenses/internal/expense"
-	"expenses/internal/router"
 	"log"
 	"net/http"
 )
 
 func main() {
 
-	db, err := database.New("exenses.db")
+	db, err := bootstrap.NewDB("exenses.db")
 
 	if err != nil {
 		log.Fatal(err)
@@ -23,7 +22,7 @@ func main() {
 
 	handler := handler.NewHandler(service)
 
-	r := router.New(handler)
+	r := bootstrap.NewRouter(handler)
 	log.Println("server running :8080")
 
 	err = http.ListenAndServe(
