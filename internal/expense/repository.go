@@ -16,4 +16,3 @@ type Repository interface {
 
 	Delete(ctx context.Context, id int64) error
 }
-

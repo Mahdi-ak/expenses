@@ -1,16 +1,16 @@
 package router
 
 import (
-	"expenses/internal/expense"
+	"expenses/handler"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type Router struct {
-	handler *expense.Handler
+	handler *handler.Handler
 }
 
-func New(handler *expense.Handler) *Router {
+func New(handler *handler.Handler) *Router {
 	return &Router{
 		handler: handler,
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"expenses/handler"
 	"expenses/internal/database"
 	"expenses/internal/expense"
 	"expenses/internal/router"
@@ -20,7 +21,7 @@ func main() {
 
 	service := expense.NewService(repository)
 
-	handler := expense.NewHandler(service)
+	handler := handler.NewHandler(service)
 
 	r := router.New(handler)
 	log.Println("server running :8080")

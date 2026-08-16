@@ -1,7 +1,8 @@
-package expense
+package handler
 
 import (
 	"encoding/json"
+	"expenses/internal/expense"
 	"net/http"
 	"strconv"
 	"time"
@@ -11,10 +12,10 @@ import (
 )
 
 type Handler struct {
-	service *Service
+	service *expense.Service
 }
 
-func NewHandler(service *Service) *Handler {
+func NewHandler(service *expense.Service) *Handler {
 	return &Handler{
 		service: service,
 	}
@@ -41,7 +42,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	expense := Expense{
+	expense := expense.Expense{
 		Amount:      amount,
 		Category:    req.Category,
 		Description: req.Description,
@@ -61,7 +62,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
 
-	var filter Filter
+	var filter expense.Filter
 
 	category := r.URL.Query().Get("category")
 
