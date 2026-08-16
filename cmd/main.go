@@ -6,6 +6,8 @@ import (
 	"expenses/internal/expense"
 	"log"
 	"net/http"
+
+	"github.com/spf13/viper"
 )
 
 func main() {
@@ -23,10 +25,19 @@ func main() {
 	handler := handler.NewHandler(service)
 
 	r := bootstrap.NewRouter(handler)
-	log.Println("server running :8080")
 
+	viper.SetConfigFile(".env")
+
+	err = viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+
+	port := viper.GetString("APPLICATION_PORT")
+
+	log.Println("server running :", port)
 	err = http.ListenAndServe(
-		":8080",
+		port,
 		r.Setup(),
 	)
 
