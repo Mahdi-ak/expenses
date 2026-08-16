@@ -82,7 +82,7 @@ func (r *SQLiteRepository) GetAll(ctx context.Context, filter Filter) ([]Expense
 	}
 
 	if filter.Amaount != nil {
-		query = r.db.Where("amount = ?", *filter.Amaount)
+		query = r.db.Where("amount >= ?", *filter.Amaount)
 	}
 
 	result := query.Find(&expenses)
