@@ -25,6 +25,7 @@ type CreateExpenseRequest struct {
 	Amount      string `json:"amount"`
 	Category    string `json:"category"`
 	Description string `json:"description"`
+	Budget      string `json:"budget"`
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
@@ -42,10 +43,16 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	budget, err := decimal.NewFromString(req.Budget)
+	if err != nil {
+		return
+	}
+
 	expense := expense.Expense{
 		Amount:      amount,
 		Category:    req.Category,
 		Description: req.Description,
+		Budget:      budget,
 	}
 
 	result, err := h.service.Create(r.Context(), expense)
@@ -151,4 +158,25 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Handler) Getummery(w http.ResponseWriter, r *http.Request) {
+	expenses, summary, err := h.service.GetExpensesWithSummary(r.Context())
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{
+		"expenses": expenses,
+		"summary": map[string]interface{}{
+			"total_amount": summary.TotalAmount,
+			"total_budget": summary.TotalBudget,
+			"difference":   summary.Difference,
+		},
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
 }

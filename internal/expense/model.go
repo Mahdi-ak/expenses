@@ -12,4 +12,5 @@ type Expense struct {
 	Category    string          `gorm:"not null" json:"category"`
 	Description string          `gorm:"type:text" json:"description"`
 	CreatedAt   time.Time       `gorm:"autoCreateTime;not null" json:"created_at"`
+	Budget      decimal.Decimal `gorm:"type:decimal(10,2);not null" json:"budget"`
 }

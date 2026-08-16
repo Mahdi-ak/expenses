@@ -1,6 +1,10 @@
 package expense
 
-import "context"
+import (
+	"context"
+
+	"github.com/shopspring/decimal"
+)
 
 type Service struct {
 	repository Repository
@@ -26,4 +30,33 @@ func (s *Service) Delete(ctx context.Context, id int64) error {
 
 func (s *Service) GetByID(ctx context.Context, id int64) (Expense, error) {
 	return s.repository.GetByID(ctx, id)
+}
+
+type ExpenseSummary struct {
+	TotalAmount decimal.Decimal `json:"total_amount"`
+	TotalBudget decimal.Decimal `json:"total_budget"`
+	Difference  decimal.Decimal `json:"difference"`
+}
+
+func (s *Service) GetExpensesWithSummary(ctx context.Context) ([]Expense, ExpenseSummary, error) {
+	exspenses, err := s.repository.GetAll(ctx, Filter{})
+	if err != nil {
+		return nil, ExpenseSummary{}, err
+	}
+
+	totalAmount := decimal.Zero
+	totalBudget := decimal.Zero
+
+	for _, exspense := range exspenses {
+		totalAmount = totalAmount.Add(exspense.Amount)
+		totalBudget = totalBudget.Add(exspense.Budget)
+	}
+
+	summary := ExpenseSummary{
+		TotalAmount: totalAmount,
+		TotalBudget: totalBudget,
+		Difference:  totalBudget.Sub(totalAmount),
+	}
+	return exspenses, summary, nil
+
 }
