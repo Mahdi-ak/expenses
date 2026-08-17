@@ -3,6 +3,7 @@ package expense
 import (
 	"context"
 	"errors"
+	"expenses/internal/domain"
 	"time"
 
 	"gorm.io/gorm"
@@ -18,33 +19,33 @@ func New(db *gorm.DB) Repository {
 	}
 }
 
-func (r *SQLiteRepository) Create(ctx context.Context, expense Expense) (Expense, error) {
+func (r *SQLiteRepository) Create(ctx context.Context, expense domain.Expense) (domain.Expense, error) {
 
 	result := r.db.WithContext(ctx).Create(&expense)
 	if result.Error != nil {
-		return Expense{}, result.Error
+		return domain.Expense{}, result.Error
 	}
 	return expense, nil
 }
 
-func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (Expense, error) {
+func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (domain.Expense, error) {
 
-	var expense Expense
+	var expense domain.Expense
 
 	result := r.db.WithContext(ctx).First(&expense, id)
 	if result.Error != nil {
 		// if result.Error == gorm.ErrRecordNotFound {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return Expense{}, ErrExpenseNotFound
+			return domain.Expense{}, ErrExpenseNotFound
 		}
-		return Expense{}, result.Error
+		return domain.Expense{}, result.Error
 	}
 	return expense, nil
 
 }
 func (r *SQLiteRepository) Delete(ctx context.Context, id int64) error {
 
-	result := r.db.WithContext(ctx).Delete(&Expense{}, id)
+	result := r.db.WithContext(ctx).Delete(&domain.Expense{}, id)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -54,9 +55,9 @@ func (r *SQLiteRepository) Delete(ctx context.Context, id int64) error {
 	return nil
 }
 
-func (r *SQLiteRepository) GetAll(ctx context.Context, filter Filter) ([]Expense, error) {
+func (r *SQLiteRepository) GetAll(ctx context.Context, filter Filter) ([]domain.Expense, error) {
 
-	var expenses []Expense
+	var expenses []domain.Expense
 
 	query := r.db.WithContext(ctx)
 

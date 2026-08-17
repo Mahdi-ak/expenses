@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"expenses/internal/expense"
+	"expenses/internal/domain"
 	"fmt"
 
 	"gorm.io/driver/sqlite"
@@ -22,7 +22,7 @@ func NewDB(path string) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	err = db.AutoMigrate(&expense.Expense{})
+	err = db.AutoMigrate(&domain.Expense{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to auto migrate: %w", err)
 	}
