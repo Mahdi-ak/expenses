@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"expenses/internal/domain"
 	"expenses/internal/expense"
 	"net/http"
 	"strconv"
@@ -47,15 +48,12 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-
-	expense := expense.Expense{
-		Amount:      amount,
-		Category:    req.Category,
-		Description: req.Description,
-		Budget:      budget,
+	expense, err := domain.NewExpense(amount, req.Category, req.Description, budget)
+	if err != nil {
+		return
 	}
 
-	result, err := h.service.Create(r.Context(), expense)
+	result, err := h.service.Create(r.Context(), *expense)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
