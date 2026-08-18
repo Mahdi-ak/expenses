@@ -13,7 +13,7 @@ type SQLiteRepository struct {
 	db *gorm.DB
 }
 
-func New(db *gorm.DB) Repository {
+func New(db *gorm.DB) domain.Repository {
 	return &SQLiteRepository{
 		db: db,
 	}
@@ -21,43 +21,43 @@ func New(db *gorm.DB) Repository {
 
 func (r *SQLiteRepository) Create(ctx context.Context, expense domain.Expense) (domain.Expense, error) {
 
-	result := r.db.WithContext(ctx).Create(&expense)
+	dbmodel := toDBModel(expense)
+	result := r.db.WithContext(ctx).Create(&dbmodel)
 	if result.Error != nil {
-		return domain.Expense{}, result.Error
+		return toDomain(dbmodel), result.Error
 	}
-	return expense, nil
+	return toDomain(dbmodel), nil
 }
 
 func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (domain.Expense, error) {
 
-	var expense domain.Expense
+	var model Expense
 
-	result := r.db.WithContext(ctx).First(&expense, id)
+	result := r.db.WithContext(ctx).First(&model, id)
 	if result.Error != nil {
-		// if result.Error == gorm.ErrRecordNotFound {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return domain.Expense{}, ErrExpenseNotFound
+			return domain.Expense{}, domain.ErrExpenseNotFound
 		}
 		return domain.Expense{}, result.Error
 	}
-	return expense, nil
+	return toDomain(model), nil
 
 }
 func (r *SQLiteRepository) Delete(ctx context.Context, id int64) error {
 
-	result := r.db.WithContext(ctx).Delete(&domain.Expense{}, id)
+	result := r.db.WithContext(ctx).Delete(&Expense{}, id)
 	if result.Error != nil {
 		return result.Error
 	}
 	if result.RowsAffected == 0 {
-		return ErrExpenseNotFound
+		return domain.ErrExpenseNotFound
 	}
 	return nil
 }
 
-func (r *SQLiteRepository) GetAll(ctx context.Context, filter Filter) ([]domain.Expense, error) {
+func (r *SQLiteRepository) GetAll(ctx context.Context, filter domain.Filter) ([]domain.Expense, error) {
 
-	var expenses []domain.Expense
+	var expenses []Expense
 
 	query := r.db.WithContext(ctx)
 
@@ -66,8 +66,7 @@ func (r *SQLiteRepository) GetAll(ctx context.Context, filter Filter) ([]domain.
 	}
 
 	if filter.Date != nil {
-		// start := filter.Date.Truncate(24 * time.Hour)
-		// end := start.Add(24 * time.Hour)
+
 		date := *filter.Date
 
 		start := time.Date(
@@ -83,7 +82,7 @@ func (r *SQLiteRepository) GetAll(ctx context.Context, filter Filter) ([]domain.
 	}
 
 	if filter.Amaount != nil {
-		query = r.db.Where("amount >= ?", *filter.Amaount)
+		query = query.Where("amount >= ?", *filter.Amaount)
 	}
 
 	result := query.Find(&expenses)
@@ -92,5 +91,5 @@ func (r *SQLiteRepository) GetAll(ctx context.Context, filter Filter) ([]domain.
 		return nil, result.Error
 	}
 
-	return expenses, nil
+	return toDomainList(expenses), nil
 }

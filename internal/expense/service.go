@@ -8,10 +8,10 @@ import (
 )
 
 type Service struct {
-	repository Repository
+	repository domain.Repository
 }
 
-func NewService(repository Repository) *Service {
+func NewService(repository domain.Repository) *Service {
 	return &Service{
 		repository: repository,
 	}
@@ -21,7 +21,7 @@ func (s *Service) Create(ctx context.Context, expense domain.Expense) (domain.Ex
 	return s.repository.Create(ctx, expense)
 }
 
-func (s *Service) GetAll(ctx context.Context, filter Filter) ([]domain.Expense, error) {
+func (s *Service) GetAll(ctx context.Context, filter domain.Filter) ([]domain.Expense, error) {
 	return s.repository.GetAll(ctx, filter)
 }
 
@@ -40,7 +40,7 @@ type ExpenseSummary struct {
 }
 
 func (s *Service) GetExpensesWithSummary(ctx context.Context) ([]domain.Expense, ExpenseSummary, error) {
-	exspenses, err := s.repository.GetAll(ctx, Filter{})
+	exspenses, err := s.repository.GetAll(ctx, domain.Filter{})
 	if err != nil {
 		return nil, ExpenseSummary{}, err
 	}

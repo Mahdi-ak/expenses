@@ -67,7 +67,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
 
-	var filter expense.Filter
+	var filter domain.Filter
 
 	category := r.URL.Query().Get("category")
 

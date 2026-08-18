@@ -23,7 +23,7 @@ func (r *Router) Setup() *chi.Mux {
 	router.Post("/expenses", r.handler.Create)
 	router.Get("/expenses", r.handler.GetAll)
 	router.Get("/expenses/{id}", r.handler.GetByID)
-	router.Delete("/expenses", r.handler.Delete)
+	router.Delete("/expenses/{id}", r.handler.Delete)
 	router.Get("/exspenses/summery", r.handler.Getummery)
 	return router
 }
