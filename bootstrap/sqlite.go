@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"expenses/internal/expense"
+	"expenses/internal/application/expense"
 	"fmt"
 
 	"gorm.io/driver/sqlite"

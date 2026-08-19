@@ -1,8 +1,9 @@
-package expense
+package infrastructure
 
 import (
 	"context"
 	"errors"
+	"expenses/internal/application/expense"
 	"expenses/internal/domain"
 	"time"
 
@@ -31,7 +32,7 @@ func (r *SQLiteRepository) Create(ctx context.Context, expense domain.Expense) (
 
 func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (domain.Expense, error) {
 
-	var model Expense
+	var model expense.Expense
 
 	result := r.db.WithContext(ctx).First(&model, id)
 	if result.Error != nil {
@@ -45,7 +46,7 @@ func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (domain.Expens
 }
 func (r *SQLiteRepository) Delete(ctx context.Context, id int64) error {
 
-	result := r.db.WithContext(ctx).Delete(&Expense{}, id)
+	result := r.db.WithContext(ctx).Delete(&expense.Expense{}, id)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -57,7 +58,7 @@ func (r *SQLiteRepository) Delete(ctx context.Context, id int64) error {
 
 func (r *SQLiteRepository) GetAll(ctx context.Context, filter domain.Filter) ([]domain.Expense, error) {
 
-	var expenses []Expense
+	var expenses []expense.Expense
 
 	query := r.db.WithContext(ctx)
 

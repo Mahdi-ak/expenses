@@ -3,7 +3,8 @@ package main
 import (
 	"expenses/bootstrap"
 	"expenses/handler"
-	"expenses/internal/expense"
+	"expenses/internal/application/expense"
+	"expenses/internal/infrastructure"
 	"log"
 	"net/http"
 
@@ -18,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	repository := expense.New(db)
+	repository := infrastructure.New(db)
 
 	service := expense.NewService(repository)
 

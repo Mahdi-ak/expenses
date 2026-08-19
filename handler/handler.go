@@ -2,8 +2,8 @@ package handler
 
 import (
 	"encoding/json"
+	"expenses/internal/application/expense"
 	"expenses/internal/domain"
-	"expenses/internal/expense"
 	"net/http"
 	"strconv"
 	"time"
