@@ -14,7 +14,7 @@ type SQLiteRepository struct {
 	db *gorm.DB
 }
 
-func New(db *gorm.DB) domain.Repository {
+func NewSQLLite(db *gorm.DB) domain.Repository {
 	return &SQLiteRepository{
 		db: db,
 	}
@@ -22,12 +22,12 @@ func New(db *gorm.DB) domain.Repository {
 
 func (r *SQLiteRepository) Create(ctx context.Context, expense domain.Expense) (domain.Expense, error) {
 
-	dbmodel := toDBModel(expense)
+	dbmodel := toSQLiModel(expense)
 	result := r.db.WithContext(ctx).Create(&dbmodel)
 	if result.Error != nil {
-		return toDomain(dbmodel), result.Error
+		return sqliToDomain(dbmodel), result.Error
 	}
-	return toDomain(dbmodel), nil
+	return sqliToDomain(dbmodel), nil
 }
 
 func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (domain.Expense, error) {
@@ -41,7 +41,7 @@ func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (domain.Expens
 		}
 		return domain.Expense{}, result.Error
 	}
-	return toDomain(model), nil
+	return sqliToDomain(model), nil
 
 }
 func (r *SQLiteRepository) Delete(ctx context.Context, id int64) error {
@@ -92,5 +92,5 @@ func (r *SQLiteRepository) GetAll(ctx context.Context, filter domain.Filter) ([]
 		return nil, result.Error
 	}
 
-	return toDomainList(expenses), nil
+	return sqliToDomainList(expenses), nil
 }

@@ -1,0 +1,18 @@
+
+.env :
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_USER=mm
+    DB_PASSWORD=password
+    DB_NAME=expenses
+    DB_SSLMODE=disable
+
+
+create expense:
+    post =>
+        {
+        "amount": "1000",
+        "category": "food",
+        "description": "kbab",
+        "budget": "1100"
+        }

@@ -5,7 +5,7 @@ import (
 	"expenses/internal/domain"
 )
 
-func toDomain(model expense.Expense) domain.Expense {
+func sqliToDomain(model expense.Expense) domain.Expense {
 	return domain.Expense{
 		ID:          model.ID,
 		Amount:      model.Amount,
@@ -16,7 +16,7 @@ func toDomain(model expense.Expense) domain.Expense {
 	}
 }
 
-func toDBModel(d domain.Expense) expense.Expense {
+func toSQLiModel(d domain.Expense) expense.Expense {
 	return expense.Expense{
 		ID:          d.ID,
 		Amount:      d.Amount,
@@ -27,12 +27,12 @@ func toDBModel(d domain.Expense) expense.Expense {
 	}
 }
 
-func toDomainList(models []expense.Expense) []domain.Expense {
+func sqliToDomainList(models []expense.Expense) []domain.Expense {
 
 	expenses := make([]domain.Expense, 0, len(models))
 
 	for _, model := range models {
-		expenses = append(expenses, toDomain(model))
+		expenses = append(expenses, sqliToDomain(model))
 	}
 
 	return expenses

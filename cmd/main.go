@@ -4,7 +4,9 @@ import (
 	"expenses/bootstrap"
 	"expenses/handler"
 	"expenses/internal/application/expense"
-	"expenses/internal/infrastructure"
+	infrastructure "expenses/internal/infrastructure/postgres"
+
+	// infrastructure "expenses/internal/infrastructure/sqlite"
 	"log"
 	"net/http"
 
@@ -13,13 +15,15 @@ import (
 
 func main() {
 
-	db, err := bootstrap.NewDB("exenses.db")
+	// db, err := bootstrap.InitSQLLite("exenses.db")
+	db, err := bootstrap.InitPostgresql()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	repository := infrastructure.New(db)
+	// repository := infrastructure.NewSQLLite(db)
+	repository := infrastructure.NewPostgreSQLRepository(db)
 
 	service := expense.NewService(repository)
 
