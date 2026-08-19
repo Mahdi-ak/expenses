@@ -22,12 +22,14 @@ func NewSQLLite(db *gorm.DB) domain.Repository {
 
 func (r *SQLiteRepository) Create(ctx context.Context, expense domain.Expense) (domain.Expense, error) {
 
-	dbmodel := toSQLiModel(expense)
-	result := r.db.WithContext(ctx).Create(&dbmodel)
+	model := toSQLiModel(expense)
+	result := r.db.WithContext(ctx).Create(&model)
+
 	if result.Error != nil {
-		return sqliToDomain(dbmodel), result.Error
+		return sqliToDomain(model), result.Error
 	}
-	return sqliToDomain(dbmodel), nil
+
+	return sqliToDomain(model), nil
 }
 
 func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (domain.Expense, error) {
@@ -44,21 +46,10 @@ func (r *SQLiteRepository) GetByID(ctx context.Context, id int64) (domain.Expens
 	return sqliToDomain(model), nil
 
 }
-func (r *SQLiteRepository) Delete(ctx context.Context, id int64) error {
-
-	result := r.db.WithContext(ctx).Delete(&expense.Expense{}, id)
-	if result.Error != nil {
-		return result.Error
-	}
-	if result.RowsAffected == 0 {
-		return domain.ErrExpenseNotFound
-	}
-	return nil
-}
 
 func (r *SQLiteRepository) GetAll(ctx context.Context, filter domain.Filter) ([]domain.Expense, error) {
 
-	var expenses []expense.Expense
+	var model []expense.Expense
 
 	query := r.db.WithContext(ctx)
 
@@ -86,11 +77,23 @@ func (r *SQLiteRepository) GetAll(ctx context.Context, filter domain.Filter) ([]
 		query = query.Where("amount >= ?", *filter.Amaount)
 	}
 
-	result := query.Find(&expenses)
+	result := query.Find(&model)
 
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
-	return sqliToDomainList(expenses), nil
+	return sqliToDomainList(model), nil
+}
+
+func (r *SQLiteRepository) Delete(ctx context.Context, id int64) error {
+
+	result := r.db.WithContext(ctx).Delete(&expense.Expense{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return domain.ErrExpenseNotFound
+	}
+	return nil
 }
