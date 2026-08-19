@@ -6,11 +6,11 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type SQLiExpense struct {
-	ID          int64           `gorm:"primaryKey"`
-	Amount      decimal.Decimal `gorm:"type:numeric(10,2);not null"`
-	Category    string          `gorm:"not null"`
-	Description string          `gorm:"type:text"`
-	CreatedAt   time.Time       `gorm:"autoCreateTime;not null"`
-	Budget      decimal.Decimal `gorm:"type:numeric(10,2);not null"`
+type Expense struct {
+	ID          int64           `gorm:"primaryKey" json:"id"`
+	Amount      decimal.Decimal `gorm:"type:decimal(10,2);not null" json:"amount"`
+	Category    string          `gorm:"not null" json:"category"`
+	Description string          `gorm:"type:text" json:"description"`
+	CreatedAt   time.Time       `gorm:"autoCreateTime;not null" json:"created_at"`
+	Budget      decimal.Decimal `gorm:"type:decimal(10,2);not null" json:"budget"`
 }
