@@ -17,11 +17,11 @@ func InitPostgresql() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	host := viper.GetString("DB_HOST")
-	port := viper.GetString("DB_PORT")
-	user := viper.GetString("DB_USER")
-	password := viper.GetString("DB_PASSWORD")
-	dbName := viper.GetString("DB_NAME")
+	host := viper.GetString("POSTGRES_HOST")
+	port := viper.GetString("POSTGRES_PORT")
+	user := viper.GetString("POSTGRES_USER")
+	password := viper.GetString("POSTGRES_PASSWORD")
+	dbName := viper.GetString("POSTGRES_DB")
 	sslMode := viper.GetString("DB_SSLMODE")
 
 	dsn := fmt.Sprintf(

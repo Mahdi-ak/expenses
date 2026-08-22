@@ -1,12 +1,20 @@
 
 .env :
-    DB_HOST=localhost
-    DB_PORT=5432
-    DB_USER=mm
-    DB_PASSWORD=password
-    DB_NAME=expenses
-    DB_SSLMODE=disable
+    APPLICATION_PORT=:8080
 
+    # if use sqlite or postgres
+
+    # DATABASE_DRIVER=sqlite
+    DATABASE_DRIVER=postgres
+
+    POSTGRES_HOST=localhost
+    POSTGRES_PORT=5432
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=postgres
+    POSTGRES_DB=expenses
+    POSTGRES_SSLMODE=disable
+
+    SQLITE_PATH=expenses.db
 
 create expense:
     post =>

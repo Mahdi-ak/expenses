@@ -5,8 +5,8 @@ services:
     container_name: expenses-postgres
 
     environment:
-      POSTGRES_USER: mahdi
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: expenses
 
     ports:

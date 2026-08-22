@@ -4,49 +4,50 @@ import (
 	"expenses/bootstrap"
 	"expenses/handler"
 	"expenses/internal/application/expense"
-	infrastructure "expenses/internal/infrastructure/postgres"
-
-	// infrastructure "expenses/internal/infrastructure/sqlite"
-	"log"
+	"expenses/internal/domain"
 	"net/http"
 
-	"github.com/spf13/viper"
+	postgres "expenses/internal/infrastructure/postgres"
+	sqlite "expenses/internal/infrastructure/sqlite"
+
+	"log"
 )
 
 func main() {
 
-	// db, err := bootstrap.InitSQLLite("exenses.db")
-	db, err := bootstrap.InitPostgresql()
+	config := bootstrap.LoadConfig()
 
-	if err != nil {
-		log.Fatal(err)
+	var repository domain.Repository
+
+	switch config.DatabaseDriver {
+	case "postgres":
+		db, err := bootstrap.InitPostgresql()
+		if err != nil {
+			log.Fatal(err)
+		}
+		repository = postgres.NewPostgreSQLRepository(db)
+
+	case "sqlite":
+		db, err := bootstrap.InitSQLLite(config.SQLitePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		repository = sqlite.NewSQLLite(db)
+
+	default:
+		log.Fatalf("unsupported databse driver: %s", config.DatabaseDriver)
+
 	}
 
-	// repository := infrastructure.NewSQLLite(db)
-	repository := infrastructure.NewPostgreSQLRepository(db)
-
 	service := expense.NewService(repository)
-
 	handler := handler.NewHandler(service)
 
 	r := bootstrap.NewRouter(handler)
 
-	viper.SetConfigFile(".env")
+	log.Println("database:", config.DatabaseDriver)
+	log.Println("server running", config.ApplicationPort)
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		panic(err)
-	}
-
-	port := viper.GetString("APPLICATION_PORT")
-
-	log.Println("server running :", port)
-	err = http.ListenAndServe(
-		port,
-		r.Setup(),
-	)
-
-	if err != nil {
+	if err := http.ListenAndServe(config.ApplicationPort, r.Setup()); err != nil {
 		log.Fatal(err)
 	}
 
