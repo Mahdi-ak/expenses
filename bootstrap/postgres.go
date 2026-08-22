@@ -10,13 +10,6 @@ import (
 )
 
 func InitPostgresql() (*gorm.DB, error) {
-
-	viper.SetConfigFile(".env")
-
-	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
-	}
-
 	host := viper.GetString("POSTGRES_HOST")
 	port := viper.GetString("POSTGRES_PORT")
 	user := viper.GetString("POSTGRES_USER")
