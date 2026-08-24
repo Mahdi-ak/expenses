@@ -1,0 +1,9 @@
+all: false
+packages:
+  expenses/internal/domain:
+    interfaces:
+      Repository:
+        config:
+          dir: "{{.InterfaceDir}}/mocks"
+          pkgname: "mocks"
+          filename: "Repository.go"

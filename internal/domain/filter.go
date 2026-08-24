@@ -9,5 +9,5 @@ import (
 type Filter struct {
 	Category *string
 	Date     *time.Time
-	Amaount  *decimal.Decimal
+	Amount   *decimal.Decimal
 }

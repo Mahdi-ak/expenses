@@ -73,8 +73,8 @@ func (r *SQLiteRepository) GetAll(ctx context.Context, filter domain.Filter) ([]
 		query = query.Where("created_at >= ? AND created_at < ?", start, end)
 	}
 
-	if filter.Amaount != nil {
-		query = query.Where("amount >= ?", *filter.Amaount)
+	if filter.Amount != nil {
+		query = query.Where("amount >= ?", *filter.Amount)
 	}
 
 	result := query.Find(&model)
