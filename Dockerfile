@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
     CGO_ENABLED=0 GOOS=linux go build -o app ./cmd
 
-FROM alpine:3.22
+FROM scratch
 
 WORKDIR /app
 
