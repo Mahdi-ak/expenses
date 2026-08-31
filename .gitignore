@@ -1,3 +1,4 @@
 *.db
 help.md
 .env
+.vscode

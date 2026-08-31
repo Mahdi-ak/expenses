@@ -1,21 +1,20 @@
 package bootstrap
 
 import (
-	infrastructure "expenses/internal/infrastructure/postgres"
+	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/spf13/viper"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-func InitPostgresql() (*gorm.DB, error) {
+func InitPostgresql(ctx context.Context) (*pgxpool.Pool, error) {
 	host := viper.GetString("POSTGRES_HOST")
 	port := viper.GetString("POSTGRES_PORT")
 	user := viper.GetString("POSTGRES_USER")
 	password := viper.GetString("POSTGRES_PASSWORD")
 	dbName := viper.GetString("POSTGRES_DB")
-	sslMode := viper.GetString("DB_SSLMODE")
+	sslMode := viper.GetString("POSTGRES_SSLMODE")
 
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
@@ -27,18 +26,15 @@ func InitPostgresql() (*gorm.DB, error) {
 		sslMode,
 	)
 
-	db, err := gorm.Open(
-		postgres.Open(dsn),
-		&gorm.Config{},
-	)
-
+	pool, err := pgxpool.New(ctx, dsn)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(&infrastructure.PostgresExpense{}); err != nil {
+	if err := pool.Ping(ctx); err != nil {
+		pool.Close()
 		return nil, err
 	}
 
-	return db, nil
+	return pool, nil
 }
