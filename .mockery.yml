@@ -4,6 +4,15 @@ packages:
     interfaces:
       Repository:
         config:
-          dir: "{{.InterfaceDir}}/mocks"
+          dir: testing/mocks
           pkgname: "mocks"
-          filename: "Repository.go"
+          filename: "mock_{{.InterfaceName | snakecase }}.go"
+
+  expenses/internal/application/expense:
+    interfaces:
+      ServiceInterface:
+        config:
+          dir: testing/mocks
+          pkgname: "mocks"
+          filename: "mock_{{.InterfaceName | snakecase }}.go"
+

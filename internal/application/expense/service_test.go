@@ -1,12 +1,13 @@
-package expense
+package expense_test
 
 import (
 	"context"
 	"errors"
 	"testing"
 
+	"expenses/internal/application/expense"
 	"expenses/internal/domain"
-	"expenses/internal/domain/mocks"
+	"expenses/testing/mocks"
 
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +19,7 @@ func TestGetExpensesWithSummary(t *testing.T) {
 
 	t.Run("returns expenses with correct summary", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		expenses := []domain.Expense{
 			{
@@ -46,7 +47,7 @@ func TestGetExpensesWithSummary(t *testing.T) {
 
 	t.Run("returns zero summary when no expenses", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		repo.EXPECT().GetAll(ctx, domain.Filter{}).Return(nil, nil).Once()
 
@@ -61,7 +62,7 @@ func TestGetExpensesWithSummary(t *testing.T) {
 
 	t.Run("returns error when repository fails", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		expectedErr := errors.New("db failure")
 		repo.EXPECT().GetAll(ctx, domain.Filter{}).Return(nil, expectedErr).Once()
@@ -70,7 +71,7 @@ func TestGetExpensesWithSummary(t *testing.T) {
 
 		assert.ErrorIs(t, err, expectedErr)
 		assert.Nil(t, got)
-		assert.Equal(t, ExpenseSummary{}, summary)
+		assert.Equal(t, expense.ExpenseSummary{}, summary)
 	})
 }
 
@@ -79,7 +80,7 @@ func TestCreate(t *testing.T) {
 
 	t.Run("creates expense", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		expense := domain.Expense{
 			Amount:   decimal.NewFromFloat(25.99),
@@ -98,7 +99,7 @@ func TestCreate(t *testing.T) {
 
 	t.Run("returns error when repository fails", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		expectedErr := errors.New("db failure")
 		repo.EXPECT().Create(ctx, mock.AnythingOfType("domain.Expense")).Return(domain.Expense{}, expectedErr).Once()
@@ -115,7 +116,7 @@ func TestGetAll(t *testing.T) {
 
 	t.Run("returns expenses for filter", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		filter := domain.Filter{}
 		expenses := []domain.Expense{
@@ -132,7 +133,7 @@ func TestGetAll(t *testing.T) {
 
 	t.Run("returns error when repository fails", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		expectedErr := errors.New("db failure")
 		repo.EXPECT().GetAll(ctx, domain.Filter{}).Return(nil, expectedErr).Once()
@@ -149,7 +150,7 @@ func TestDelete(t *testing.T) {
 
 	t.Run("deletes expense with valid id", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		repo.EXPECT().Delete(ctx, int64(1)).Return(nil).Once()
 
@@ -160,18 +161,18 @@ func TestDelete(t *testing.T) {
 
 	t.Run("returns error when id is not positive", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		for _, id := range []int64{0, -1} {
 			err := svc.Delete(ctx, id)
 
-			assert.ErrorIs(t, err, ErrInvalidExpenseID)
+			assert.ErrorIs(t, err, expense.ErrInvalidExpenseID)
 		}
 	})
 
 	t.Run("returns error when repository fails", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		expectedErr := errors.New("db failure")
 		repo.EXPECT().Delete(ctx, int64(5)).Return(expectedErr).Once()
@@ -187,7 +188,7 @@ func TestGetByID(t *testing.T) {
 
 	t.Run("returns expense with valid id", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		expense := domain.Expense{ID: 1, Category: "food"}
 		repo.EXPECT().GetByID(ctx, int64(1)).Return(expense, nil).Once()
@@ -200,19 +201,19 @@ func TestGetByID(t *testing.T) {
 
 	t.Run("returns error when id is not positive", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		for _, id := range []int64{0, -3} {
 			got, err := svc.GetByID(ctx, id)
 
-			assert.ErrorIs(t, err, ErrInvalidExpenseID)
+			assert.ErrorIs(t, err, expense.ErrInvalidExpenseID)
 			assert.Equal(t, domain.Expense{}, got)
 		}
 	})
 
 	t.Run("returns error when repository fails", func(t *testing.T) {
 		repo := mocks.NewMockRepository(t)
-		svc := NewService(repo)
+		svc := expense.NewService(repo)
 
 		expectedErr := errors.New("db failure")
 		repo.EXPECT().GetByID(ctx, int64(9)).Return(domain.Expense{}, expectedErr).Once()
