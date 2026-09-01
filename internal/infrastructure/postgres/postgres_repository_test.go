@@ -58,10 +58,10 @@ func (s *PostgreSQLRepositorySuite) SetupSuite() {
 		CREATE TABLE expenses (
 			id BIGSERIAL PRIMARY KEY,
 			amount NUMERIC(10, 2) NOT NULL,
-			category TEXT NOT NULL,
-			description TEXT NOT NULL,
-			budget NUMERIC(10, 2) NOT NULL,
-			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+			category VARCHAR(100) NOT NULL,
+			description TEXT,
+			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+			budget NUMERIC(10, 2) NOT NULL
 		)
 	`)
 
