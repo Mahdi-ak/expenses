@@ -22,7 +22,7 @@ type ExpenseSummary struct {
 	Difference  decimal.Decimal `json:"difference"`
 }
 
-func NewService(repository domain.Repository) *Service {
+func NewService(repository domain.Repository) ServiceInterface {
 	return &Service{
 		repository: repository,
 	}

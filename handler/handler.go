@@ -14,10 +14,10 @@ import (
 )
 
 type Handler struct {
-	service *expense.Service
+	service expense.ServiceInterface
 }
 
-func NewHandler(service *expense.Service) *Handler {
+func NewHandler(service expense.ServiceInterface) *Handler {
 	return &Handler{
 		service: service,
 	}
