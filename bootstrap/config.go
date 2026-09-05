@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	ApplicationPort  string
+	GrpcPort         string
 	PostgresHost     string
 	PostgresPort     string
 	PostgresUser     string
@@ -21,6 +22,7 @@ func LoadConfig() Config {
 	viper.AutomaticEnv()
 
 	viper.SetDefault("APPLICATION_PORT", ":8080")
+	viper.SetDefault("GRPC_PORT", ":50051")
 	viper.SetDefault("POSTGRES_HOST", "localhost")
 	viper.SetDefault("POSTGRES_PORT", "5432")
 	viper.SetDefault("POSTGRES_USER", "postgres")
@@ -39,6 +41,7 @@ func LoadConfig() Config {
 
 	return Config{
 		ApplicationPort:  viper.GetString("APPLICATION_PORT"),
+		GrpcPort:         viper.GetString("GRPC_PORT"),
 		PostgresHost:     viper.GetString("POSTGRES_HOST"),
 		PostgresPort:     viper.GetString("POSTGRES_PORT"),
 		PostgresUser:     viper.GetString("POSTGRES_USER"),

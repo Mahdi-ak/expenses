@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"expenses/handler"
+	handler "expenses/handler/http"
 
 	"github.com/go-chi/chi/v5"
 )

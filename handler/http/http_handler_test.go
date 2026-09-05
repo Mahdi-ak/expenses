@@ -3,7 +3,8 @@ package handler_test
 import (
 	"bytes"
 	"context"
-	"expenses/handler"
+
+	handler "expenses/handler/http"
 	"expenses/internal/application/expense"
 	"expenses/testing/mocks"
 

@@ -1,0 +1,72 @@
+edition = "2024";
+
+package expense.v1;
+
+option go_package = "expenses/proto/pb;pb";
+
+service ExpenseService {
+  rpc CreateExpense(CreateExpenseRequest) returns (CreateExpenseResponse);
+  rpc GetExpenses(GetExpensesRequest) returns (GetExpensesResponse);
+  rpc GetExpense(GetExpenseRequest) returns (GetExpenseResponse);
+  rpc DeleteExpense(DeleteExpenseRequest) returns (DeleteExpenseResponse);
+  rpc GetSummary(GetSummaryRequest) returns (GetSummaryResponse);
+}
+
+message Expense {
+  int64 id = 1;
+  string amount = 2;
+  string category = 3;
+  string description = 4;
+  string budget = 5;
+  string created_at = 6;
+}
+
+message CreateExpenseRequest {
+  string amount = 1;
+  string category = 2;
+  string description = 3;
+  string budget = 4;
+}
+
+message CreateExpenseResponse {
+  Expense expense = 1;
+}
+
+message GetExpensesRequest {
+  string category = 1;
+  string date = 2;
+  string amount = 3;
+}
+
+message GetExpensesResponse {
+  repeated Expense expenses = 1;
+}
+
+message GetExpenseRequest {
+  int64 id = 1;
+}
+
+message GetExpenseResponse {
+  Expense expense = 1;
+}
+
+message DeleteExpenseRequest {
+  int64 id = 1;
+}
+
+message DeleteExpenseResponse {}
+
+
+
+message GetSummaryRequest {}
+
+message GetSummaryResponse {
+  repeated Expense expenses = 1;
+  ExpenseSummary summary = 2;
+}
+
+message ExpenseSummary {
+  string total_amount = 1;
+  string total_budget = 2;
+  string difference = 3;
+}
